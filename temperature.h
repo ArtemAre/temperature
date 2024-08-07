@@ -1,8 +1,10 @@
 #pragma once
+#include <cstdlib>
 using uint64_t = unsigned long long;
+
 namespace temperature {
 
-	bool diff(long double x, long double y, long double res = 0.0001) {
+	constexpr bool diff(long double x, long double y, long double res = 0.0001) {
 		return abs(x - y) <= res;
 	}
 
@@ -97,7 +99,7 @@ namespace temperature {
 	public:
 		//from Kelvin in Celcium
 		Celcium convert_to(const Kelvin& celc) {
-			return Celcium{ static_cast<float>(celc.get()) - 273 };
+			return Celcium{ static_cast<long double>(celc.get()) - 273 };
 		}
 	};
 
@@ -134,8 +136,14 @@ namespace temperature {
 		//from Fharengeit in Kelvin
 	public:
 		Kelvin convert_to(const Fharengeit& celc) {
-			return Kelvin{ 273 + (celc.get() - 32) * (5 / 9) };
+			return Kelvin{ 273 + (static_cast<uint64_t>(celc.get()) - 32) * (5 / 9) };
 		}
 	};
+
+	template<class C, class S>
+	C convert_to(const S& c) {
+		convert<S, C> conv{};
+		return conv.convert_to(c);
+	}
 
 }
